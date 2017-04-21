@@ -1,5 +1,4 @@
 
-
 function isOnlyDigits(num) {
     return /^\d+$/.test(num);
 }
@@ -65,17 +64,16 @@ function phoneDecorator() {
         num = removeSymbols(num, [" ", "-", "+"]);
         result = setIntervalsInto(num, "-", [3, 3, 2, 2]) // set intervals: 333-333-22-22
         result = (isPlus) ? "+" + result : result;
-
         document.getElementById("billing:telephone").value = result;
     } else {
-        document.getElementById("billing:telephone").setAttribute('style', 'color: red; font-width: bold;');
+        document.getElementById("checkout-phone-decorator").setAttribute("class", "phone-decorator-alert");
     }
 
     incMsg();
 }
 
 function phoneDecoratorReset() {
-    document.getElementById("billing:telephone").setAttribute('style', 'color: black; font-width: normal;');
+    document.getElementById("checkout-phone-decorator").setAttribute("class", "phone-decorator");
 }
 
 function incMsg() {
