@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+    <script type="text/javascript" src="js/input-decorator.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="css/input-decorator.css"/>
+</head>
+<body>
+    <h1>Phone decorator</h1>
+
+    <p style="display:inline;">Please, enter your phone number:</p>
+    <span class="phone-decorator" id="checkout-phone-decorator">
+        <input type="text" name="billing[telephone]" value="" class="input-text required-entry" id="billing:telephone" onfocus="phoneDecoratorReset()" onblur="phoneDecorator()"></input>
+    </span>
+
+    <br /><br />
+    <div id="msgtxt">&square;</div>
+</body>
+<html>
