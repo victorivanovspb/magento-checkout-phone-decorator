@@ -1,14 +1,6 @@
-
-function isOnlyDigits(num) {
-    return /^\d+$/.test(num);
-}
-
 function checkPhoneNumber(num) {
-    num = removeSymbols(num, [" ", "+", "-"]);
-    if (isOnlyDigits(num)) {
-        return true;
-    }
-    return false;
+    return /^\d+$/
+        .test(removeSymbols(num, [" ", "+", "-"])); // is only digits
 }
 
 function setIntervalsInto(msg, ch, intervals) {
@@ -50,33 +42,45 @@ function trim(s, mask) {
 
 function removeSymbols(msg, symbols) {
     while (symbols.length > 0) {
-        curr = symbols.pop();
-        msg = msg.split(curr).join("");
+        var curr = symbols.pop();
+        msg = msg
+            .split(curr)
+            .join("");
     }
     return msg;
 }
 
-function phoneDecorator() {
-    var num = document.getElementById("billing:telephone").value.trim();
-    var isPlus = (num.charAt(0) === "+".charAt(0) ? true : false);
-    
-    if (checkPhoneNumber(num)) {
-        num = removeSymbols(num, [" ", "-", "+"]);
-        result = setIntervalsInto(num, "-", [3, 3, 2, 2]) // set intervals: 333-333-22-22
-        result = (isPlus) ? "+" + result : result;
-        document.getElementById("billing:telephone").value = result;
-    } else {
-        document.getElementById("checkout-phone-decorator").setAttribute("class", "phone-decorator-alert");
-    }
+function getFuncPhoneDecorator(id) {
+    var num, sign, result;
+    return function() {
+        num = removeSymbols($(id).val().trim(), [" ", "-", "+"])
 
-    incMsg();
+        if (checkPhoneNumber(num)) {
+            result = setIntervalsInto(num, "-", [3, 3, 2, 2]); // set intervals: 333-333-22-22
+            sign = (num.charAt(0) === "+".charAt(0)) ? "+" : "";
+            $(id).val(sign + result);
+        } else {
+            $("#checkout-phone-decorator")
+                .attr("class", "phone-decorator-alert");
+        }
+
+        incMsg();
+    }
 }
 
 function phoneDecoratorReset() {
-    document.getElementById("checkout-phone-decorator").setAttribute("class", "phone-decorator");
+    $("#checkout-phone-decorator")
+        .attr("class", "phone-decorator");
 }
 
 function incMsg() {
-    var msg = document.getElementById("msgtxt").innerHTML;
-    document.getElementById("msgtxt").innerHTML = msg + "&square;";
+    var $msg = $("#msgtxt");
+    var text = $msg.html();
+    $msg.html(text + "&square;");
 }
+
+$(document).ready(function() {
+    $("input#billing-telephone")
+        .focus(phoneDecoratorReset)
+        .blur(getFuncPhoneDecorator("input#billing-telephone"));
+});
