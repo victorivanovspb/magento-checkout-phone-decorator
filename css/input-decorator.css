@@ -4,3 +4,6 @@ span.phone-decorator input {
 span.phone-decorator-alert input {
     color: red;
 }
+p.p-title {
+    display: inline;
+}
