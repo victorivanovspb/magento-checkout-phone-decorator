@@ -1,4 +1,3 @@
-
 function checkPhoneNumber(num) {
     return /^\d+$/
         .test(removeSymbols(num, [" ", "+", "-"])); // is only digits
@@ -76,7 +75,8 @@ function phoneDecoratorReset() {
 
 function incMsg() {
     var $msg = $("#msgtxt");
-    $msg.html($msg.html() + "&square;");
+    var text = $msg.html();
+    $msg.html(text + "&square;");
 }
 
 $(document).ready(function() {
