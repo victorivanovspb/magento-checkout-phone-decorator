@@ -42,24 +42,24 @@ function trim(s, mask) {
 }
 
 function removeSymbols(msg, symbols) {
-    var curr;
     while (symbols.length > 0) {
-        curr = symbols.pop();
-        msg = msg.split(curr).join("");
+        var curr = symbols.pop();
+        msg = msg
+            .split(curr)
+            .join("");
     }
     return msg;
 }
 
 function getFuncPhoneDecorator(id) {
-    var num, result;
+    var num, sign, result;
     return function() {
-        num = $(id).val().trim();
+        num = removeSymbols($(id).val().trim(), [" ", "-", "+"])
 
         if (checkPhoneNumber(num)) {
-            num = removeSymbols(num, [" ", "-", "+"]);
             result = setIntervalsInto(num, "-", [3, 3, 2, 2]); // set intervals: 333-333-22-22
-            result = (num.charAt(0) === "+".charAt(0)) ? "+" + result : result;
-            $(id).val(result);
+            sign = (num.charAt(0) === "+".charAt(0)) ? "+" : "";
+            $(id).val(sign + result);
         } else {
             $("#checkout-phone-decorator")
                 .attr("class", "phone-decorator-alert");
