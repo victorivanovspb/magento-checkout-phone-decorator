@@ -1,5 +1,5 @@
 function checkPhoneNumber(num) {
-    return /^\d+$/.test(removeSymbols(num, [" ", "+", "-", "(", ")", "."]));
+    return /^\d+$/.test(removeChars(num, [" ", "+", "-", "(", ")", "."]));
 }
 
 function setIntervalsInto(data, ch, intervals) {
@@ -30,19 +30,16 @@ function trim(s, mask) {
     return s;
 }
 
-function removeSymbols(msg, symbols) {
-    while (symbols.length > 0) {
-        let curr = symbols.pop();
-        msg = msg
-            .split(curr)
-            .join("");
-    }
+function removeChars(msg, chars) {
+    chars.forEach((ch) => {
+        msg = msg.split(ch).join('');
+    });
     return msg;
 }
 
 function getPhoneDecorator(id) { //{names: {telephone: {id}}}) {
     return function() {
-        let data = removeSymbols(
+        let data = removeChars(
             $('input' + id).val().trim(),
             [" ", "+", "-", "(", ")", "."]
         );
