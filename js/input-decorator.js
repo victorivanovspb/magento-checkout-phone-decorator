@@ -1,33 +1,23 @@
 function checkPhoneNumber(num) {
-    return /^\d+$/
-        .test(removeSymbols(num, [" ", "+", "-"])); // is only digits
+    return /^\d+$/.test(removeSymbols(num, [" ", "+", "-", "(", ")", "."]));
 }
 
-function setIntervalsInto(msg, ch, intervals) {
-    if (msg.length < 3) {
-        return msg;
+function setIntervalsInto(data, ch, intervals) {
+    if (data.length < 3) {
+        return data;
     }
-
-    var result = "";
-    var ic = 0; // current interval counter
-    for (var i = msg.length - 1; i >= 0; i--, ic--) {
-
-        // load/pop next interval
-        while (ic == 0 && intervals.length > 0) {
-            ic = intervals.pop()
+    let res = [];
+    let interval = 0; // interval counter
+    for (let i = data.length - 1; i >= 0; i--, interval--) {
+        while (interval === 0 && intervals.length > 0) {
+            interval = intervals.pop();
         }
-
-        // add next character
-        result = msg.charAt(i) + result;
-
-        // add special symbol (param ch) when interval counter is 1
-        if (ic == 1) {
-            result = ch + result;
+        res.unshift(data.charAt(i));
+        if (interval === 1) {
+            res.unshift(ch);
         }
     }
-
-    result = trim(result, '-');
-    return result;
+    return trim(res.join(''), '-');
 }
 
 function trim(s, mask) {
@@ -42,7 +32,7 @@ function trim(s, mask) {
 
 function removeSymbols(msg, symbols) {
     while (symbols.length > 0) {
-        var curr = symbols.pop();
+        let curr = symbols.pop();
         msg = msg
             .split(curr)
             .join("");
@@ -50,37 +40,59 @@ function removeSymbols(msg, symbols) {
     return msg;
 }
 
-function getFuncPhoneDecorator(id) {
-    var num, sign, result;
+function getPhoneDecorator(id) { //{names: {telephone: {id}}}) {
     return function() {
-        num = removeSymbols($(id).val().trim(), [" ", "-", "+"])
-
-        if (checkPhoneNumber(num)) {
-            result = setIntervalsInto(num, "-", [3, 3, 2, 2]); // set intervals: 333-333-22-22
-            sign = (num.charAt(0) === "+".charAt(0)) ? "+" : "";
-            $(id).val(sign + result);
+        let data = removeSymbols(
+            $('input' + id).val().trim(),
+            [" ", "+", "-", "(", ")", "."]
+        );
+        if (checkPhoneNumber(data)) {
+            let sign = (data.charAt(0) === "+")
+                ? "+"
+                : "";
+            let number = setIntervalsInto(
+                data,
+                "-",
+                [3, 3, 2, 2] // интервалы: 333-333-22-22
+            );
+            $(id).val(sign + number);
         } else {
-            $("#checkout-phone-decorator")
-                .attr("class", "phone-decorator-alert");
+            $('#checkout-phone-decorator')
+                .addClass('phone-decorator-alert');
         }
-
         incMsg();
     }
 }
 
-function phoneDecoratorReset() {
-    $("#checkout-phone-decorator")
-        .attr("class", "phone-decorator");
+function getPhoneResetDecorator(id, cl1, cl2) {
+    return function() {
+        $(id)
+            .removeClass(cl2)
+            .addClass(cl1);
+    }
 }
 
 function incMsg() {
-    var $msg = $("#msgtxt");
-    var text = $msg.html();
-    $msg.html(text + "&square;");
+    let $msg = $('#msgtxt');
+    let text = $msg.html();
+    $msg.html(text + '&square;');
 }
 
 $(document).ready(function() {
-    $("input#billing-telephone")
-        .focus(phoneDecoratorReset)
-        .blur(getFuncPhoneDecorator("input#billing-telephone"));
+    let names = {
+        telephone: {
+            id: '#billing-telephone'
+        },
+        decorator: {
+            id: '#checkout-phone-decorator',
+            classes: {
+                main: 'phone-decorator',
+                alert: 'phone-decorator-alert'
+            }
+
+        }
+    };
+    $(names.telephone.id)
+        .focus(getPhoneResetDecorator(names.decorator.id, names.decorator.classes.main, names.decorator.classes.alert))
+        .blur(getPhoneDecorator(names.telephone.id));
 });
