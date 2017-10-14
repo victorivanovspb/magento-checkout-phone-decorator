@@ -78,7 +78,7 @@ function incMsg() {
 $(document).ready(function() {
     let names = {
         telephone: {
-            id: '#billing-telephone'
+            id: '#billing\\:telephone'
         },
         decorator: {
             id: '#checkout-phone-decorator',
